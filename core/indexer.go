@@ -29,6 +29,10 @@ var (
 	lists             = make(map[string]*model.ListedRecord)
 )
 
+var mintLimitWhiteList map[string]bool = map[string]bool{
+	"0xf9f128d9b8ddb66883708ba08a171e9018bed559": true,
+}
+
 func HandleNewBlock(block *model.ChainBlock) error {
 	logrus.Infof("handle block %d", block.Number)
 
@@ -280,8 +284,12 @@ func mintToken(rrc20 *model.RRC20, inscription *model.Inscription, params map[st
 
 	logrus.Infof("token: %v,amt %v ,limit %v ", token, amt, token.Limit)
 
-	if amt.Cmp(token.Limit) == 1 {
-		return model.ValidCodeWrongMaxLimit, nil
+	_, findFrom := mintLimitWhiteList[strings.ToLower(inscription.From)]
+	_, findTo := mintLimitWhiteList[strings.ToLower(inscription.To)]
+	if !findFrom || !findTo {
+		if amt.Cmp(token.Limit) == 1 {
+			return model.ValidCodeWrongMaxLimit, nil
+		}
 	}
 
 	var left = token.Max.Sub(token.Minted)
