@@ -19,7 +19,7 @@ var (
 	ErrorNoPrefix      = errors.New("no prefix")
 	ErrorDecode        = errors.New("decode error")
 
-	LatestBlockNumber uint64 = 8443423
+	LatestBlockNumber uint64 = 10320518
 
 	inscriptionNumber uint64 = 0
 	rrc20Records      []*model.RRC20
